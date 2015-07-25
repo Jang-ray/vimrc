@@ -1,0 +1,256 @@
+"==========================================================================================
+"
+" Author: Zhang Lei - zhangleiyork@foxmail.com
+"
+" Copyright (C) 2015 Zhang Lei
+"
+" Last modified: 2015-07-25 20:28
+"
+" Filename: _vimrc
+"
+" Description: 
+"
+"=========================================================================================
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => 一般设置
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 记录的历史命令条数
+set history=500
+
+" 打开识别文件类型的插件
+filetype plugin on
+filetype indent on
+
+" 当文件被其他程序修改时，vim自动更新
+set autoread
+
+" 命令前缀
+" like <leader>w saves the current file
+let mapleader = ","
+let g:mapleader = ","
+
+" 快速保存
+nmap <leader>w :w!<cr>
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => 用户界面
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set 7 lines to the cursor - when moving vertically using j/k
+set so=7
+
+" Avoid garbled characters in Chinese language windows OS
+let $LANG='en' 
+
+"set langmenu=zh_CN.UTF-8
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
+" Turn on the WiLd menu
+set wildmenu
+
+" Turn on row number
+set number
+
+" 忽略的一些文件
+set wildignore=*.o,*~,*.pyc
+if has("win16") || has("win32")
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+else
+    set wildignore+=.git\*,.hg\*,.svn\*
+endif
+
+" 显示当前行数和列数
+set ruler
+
+" Height of the command bar
+set cmdheight=2
+
+" A buffer becomes hidden when it is abandoned
+set hid
+
+" Configure backspace so it acts as it should act
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has('mouse')
+  set mouse=a
+endif
+
+" Ignore case when searching
+set ignorecase
+
+" When searching try to be smart about cases 
+set smartcase
+
+" Highlight search results
+set hlsearch
+
+" Makes search act like search in modern browsers
+set incsearch 
+
+" Don't redraw while executing macros (good performance config)
+set lazyredraw 
+
+" For regular expressions turn magic on
+set magic
+
+" 点击一个括号，显示对应的括号
+set showmatch 
+" How many tenths of a second to blink when matching brackets
+set mat=2
+
+" 报错时不响铃
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+" Add a bit extra margin to the left
+set foldcolumn=1
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => 颜色与字体
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 设置行号
+set nu
+
+" 打开语法高亮
+syntax enable
+syntax on
+
+" 设置配色方案
+try
+    colorscheme desert
+catch
+endtry
+
+" 设置背景
+set background=dark
+
+" 设置 GUI 模式参数
+if has("gui_running")
+    set guioptions-=T
+    set guioptions-=e
+    set t_Co=256
+    set guitablabel=%M\ %t
+	" 设置字体
+    set guifont=Consolas:h10:cANSI
+endif
+
+
+" 配置多语言环境,解决中文乱码问题
+if has("multi_byte") 
+    " UTF-8 编码 
+    set encoding=utf-8 
+    set termencoding=utf-8 
+    set formatoptions+=mM 
+    set fencs=utf-8,gbk 
+    if v:lang =~? '^/(zh/)/|/(ja/)/|/(ko/)' 
+        set ambiwidth=double 
+    endif 
+    if has("win32") 
+		"解决菜单乱码 
+        source $VIMRUNTIME/delmenu.vim 
+        source $VIMRUNTIME/menu.vim 
+		"解决consle输出乱码  
+        language messages zh_CN.utf-8 
+    endif 
+else
+	echoerr "Sorry, this version of (g)vim was not compiled with +multi_byte" 
+endif
+
+" 使用win标准文件格式
+set ffs=dos,unix,mac
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => 文本, 水平制表符 和一行最多字符数（切割）
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 使用空格代替水平制表符
+set expandtab
+
+" Be smart when using tabs ;)
+set smarttab
+
+" 1 tab == 4 spaces
+set shiftwidth=4
+set tabstop=4
+
+" 500个字符自动断行
+set lbr
+set tw=500
+
+set ai "Auto indent
+set si "Smart indent
+set wrap "Wrap lines
+
+
+
+
+""""""""""""""""""""""""""""""
+" => 状态栏
+""""""""""""""""""""""""""""""
+" 状态栏2行
+set laststatus=2
+
+" 重新定制状态栏
+set statusline=\ [File]\ %F%m%r%h\ %w\ \ [PWD]\ %r%{getcwd()}%h\ \ %=[Line]\ %l,%c\ %=\ %P
+
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => 添加或更新头
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <F4> :call TitleDet() <cr>'s
+
+function AddTitle()
+    call append(0,"#==========================================================================================")
+    call append(1,"#")
+    call append(2,"# Author: Zhang Lei - zhangleiyork@foxmail.com")
+    call append(3,"#")
+    call append(4,"# Copyright (C) 2015 Zhang Lei")
+    call append(5,"#")
+    call append(6,"# Last modified: ".strftime("%Y-%m-%d %H:%M"))
+    call append(7,"#")
+    call append(8,"# Filename: ".expand("%:t"))
+    call append(9,"#")
+    call append(10,"# Description: ")
+    call append(11,"#")
+    call append(12,"#=========================================================================================")
+    echohl WarningMsg | echo "Successful in adding the copyright." | echohl None
+endf
+"更新文件名和最近修改时间
+function UpdateTitle()
+    normal m'
+    execute '/# *Last modified:/s@:.*$@\=strftime(":\t%Y-%m-%d %H:%M")@'
+    normal ''
+    normal mk
+    execute '/# *Filename:/s@:.*$@\=":\t\t".expand("%:t")@'
+    execute "noh"
+    normal 'k
+    echohl WarningMsg | echo "Successful in updating the copyright." | echohl None
+endfunction
+" 判断前20行代码里面，是否有Last modified这个单词，
+" 如果没有的话，代表没有添加过作者信息，需要新添加；
+" 如果有的话，那么只需要更新即可
+function TitleDet()
+    let n=1
+    " 默认为添加
+    while n < 20
+        let line = getline(n)
+        if line =~ '^\#\s*\S*Last\smodified:\S*.*$'
+            call UpdateTitle()
+            return
+        endif
+        let n = n + 1
+    endwhile
+    call AddTitle()
+endfunction
